@@ -1,16 +1,51 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Image } from "expo-image";
+import { Stack } from "expo-router";
+import { Pressable, StyleSheet } from "react-native";
+import { Color } from "../constants/theme";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
-  );
+export default function RootLayout() {
+  return <Stack screenOptions={{
+    contentStyle: styles.contentStyle,
+    headerRight: (props) => {
+      return <Pressable>
+        <Image style={styles.settingsIcon}
+          contentFit="cover"
+          source={require("@/assets/images/control-screen/settings.png")} />
+      </Pressable>
+    },
+  }}>
+    <Stack.Screen name="index" options={{
+      headerShadowVisible: false,
+      headerTitleStyle: styles.headerTitleStyle,
+      headerStyle: styles.headerStyle,
+      headerTitleAlign: "center",
+      headerTitle: "Controls",
+    }} />
+    <Stack.Screen name="onboarding" options={{
+      headerShown: false,
+    }} />
+    <Stack.Screen name="mode-control" options={{
+      headerShown: false,
+      presentation: "modal",
+      animation: "slide_from_bottom"
+    }} />
+  </Stack>;
 }
+
+const styles = StyleSheet.create({
+  settingsIcon: {
+    width: 25,
+    height: 24,
+  },
+  headerTitleStyle: {
+    fontWeight: "normal",
+    fontSize: 18,
+    color: Color.labelsPrimary
+  },
+  headerStyle: {
+    backgroundColor: Color.colorBlack
+  },
+  contentStyle: {
+    backgroundColor: Color.colorBlack,
+  }
+})

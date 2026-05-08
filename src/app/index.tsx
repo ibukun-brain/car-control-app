@@ -1,98 +1,111 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import LeftMenu from "@/components/peformance-screen/left-menu";
+import MainContent from "@/components/peformance-screen/main-context";
+import RightMenu from "@/components/peformance-screen/right-menu";
+import { Redirect, useFocusEffect, useLocalSearchParams } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { Color } from "../constants/theme";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function DrivingPerfomanceScreen() {
+  const [fadeOutElements, setFadeOutElements] = useState(false);
+  const opacity = useSharedValue(1);
+  const params = useLocalSearchParams()
+  const resetOpacityParam = params.resetOpacity ? JSON.parse(params.resetOpacity as string) : false
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+  const [isChecking, setIsChecking] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const val = await SecureStore.getItemAsync('onboarding_complete');
+        if (val !== 'true') {
+          setNeedsOnboarding(true);
+        }
+      } catch (error) {
+        console.error('Error checking SecureStore:', error);
+      } finally {
+        setIsChecking(false);
+      }
+    }
+    checkAuth();
+  }, []);
+
+  const resetOpacity = useCallback(() => {
+    opacity.value = withTiming(1, { duration: 300 });
+    setFadeOutElements(false);
+  }, [opacity]);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      if (resetOpacityParam) {
+        resetOpacity();
+      }
+    }, [resetOpacity, resetOpacity])
   );
-}
 
-export default function HomeScreen() {
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        resetOpacity()
+      }
+    }, [resetOpacity])
+  )
+
+  const fadeOut = useCallback(() => {
+    opacity.value = withTiming(0, { duration: 600 })
+  }, [opacity])
+
+  // This effect will run when fadeOutElements changes
+  useEffect(() => {
+    if (fadeOutElements) {
+      fadeOut();
+    }
+  }, [fadeOutElements, fadeOut]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  if (isChecking) return null;
+  if (needsOnboarding) return <Redirect href="/onboarding" />;
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <GestureHandlerRootView>
+      <View style={styles.drivingPerformanceScreen}>
+        <Animated.View>
+          <MainContent />
+        </Animated.View>
+        <Animated.View style={animatedStyle}>
+          <LeftMenu setFadeOutElements={setFadeOutElements} />
+        </Animated.View>
+        <Animated.View style={animatedStyle}>
+          <RightMenu />
+        </Animated.View>
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  drivingPerformanceScreen: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    width: "100%",
+    // height: 852,
+    overflow: "hidden",
+    backgroundColor: Color.colorBlack,
+    borderRadius: 40,
+    shadowColor: "rgba(0, 0, 0, 0.25)",
+    shadowOffset: {
+      width: 0,
+      height: 60,
+    },
+    shadowRadius: 100,
+    elevation: 100,
+    shadowOpacity: 1,
   },
 });

@@ -1,65 +1,69 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-import '@/global.css';
-
-import { Platform } from 'react-native';
-
-export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
-} as const;
-
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
-
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
-
-export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
-  three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
-} as const;
-
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 800;
+/* fonts */
+export const FontFamily = {
+    bodyEmphasized: "Inter-SemiBold",
+    bodyRegular: "Inter-Regular",
+    interBold: "Inter-Bold",
+    largeTitleEmphasized: "Inter-Bold",
+    captionMedium: "Inter-Medium",
+};
+/* font sizes */
+export const FontSize = {
+    bodyEmphasized_size: 17,
+    captionRegular_size: 13,
+    size_45xl: 64,
+    footnoteRegular_size: 13,
+    subheadlineEmphasized_size: 15,
+    largeTitleEmphasized_size: 34,
+    calloutRegular_size: 16,
+    title3Emphasized_size: 20,
+};
+/* Colors */
+export const Color = {
+    colorBlack: "#000",
+    labelsPrimary: "#fff",
+    labelsSecondary: "rgba(235, 235, 245, 0.6)",
+    colorGray_100: "rgba(255, 255, 255, 0.6)",
+    foregroundSecondary: "rgba(255, 255, 255, 0.7)",
+    foregroundTertiary: "rgba(255, 255, 255, 0.5)",
+    colorGray_200: "rgba(255, 255, 255, 0.1)",
+    colorGray_300: "rgba(255, 255, 255, 0.07)",
+    darkModeContainerBackground: "rgba(0, 0, 0, 0.5)",
+    colorsBlue: "#007aff",
+};
+/* Style Variables */
+export const StyleVariable = {
+    buttonGap: 8,
+    buttonVerticalPadding: 4,
+    buttonHorizontalPadding: 12,
+    buttonSize: 44,
+    buttonIconSize: 16,
+};
+/* Paddings */
+export const Padding = {
+    p_35xl: 54,
+    p_3xs: 10,
+    p_2xs: 11,
+    p_10xs: 3,
+    p_base: 16,
+    p_5xs: 8,
+    p_xl: 20,
+    p_22xl: 41,
+    p_11xs: 2,
+    p_xs: 12,
+    p_9xs: 4,
+    p_7xs: 6,
+};
+/* border radiuses */
+export const Border = {
+    br_xl: 20,
+    br_3xs: 10,
+    br_80xl: 99,
+    br_4xs: 9,
+    br_11xs: 2,
+    br_31xl: 50,
+    br_7xs: 6,
+    br_8xs_3: 4,
+    br_10xs_5: 3,
+    br_6xs: 7,
+    br_13xl: 32,
+};
