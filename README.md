@@ -1,6 +1,7 @@
 # Car Control
 
-A React Native app built with Expo for controlling and monitoring vehicle performance, drive modes, and climate settings. The app supports iOS, Android, and the web through Expo Router's file-based routing.
+A React Native app built with Expo for controlling and monitoring vehicle performance, drive modes, and climate settings (Just the UI nothing much for now). The app supports iOS, Android, and the web through Expo Router's file-based routing.
+<img width="320" height="677" alt="index2" src="https://github.com/user-attachments/assets/0375d85d-816b-47ef-aabb-ed5e3cc9676d" />
 
 ## Features
 
